@@ -154,6 +154,9 @@ class DiscordOAuth2Session(_http.DiscordOAuth2HttpClient):
             raise exceptions.HttpException(error)
 
         state = self.__get_state()
+        # Because we use JWT, sometimes the state can be stored as a bytes object, so we have to decode it into a string for Oauth2 to parse it correctly
+        if isinstance(state, bytes):
+            state = state.decode()
         token = self._fetch_token(state)
         self.save_authorization_token(token)
 
